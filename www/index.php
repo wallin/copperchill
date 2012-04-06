@@ -1,5 +1,6 @@
 <?
-set_include_path('include');
+set_include_path('../include'.PATH_SEPARATOR.'../');
+
 require_once 'setup.php';
 
 $command = array_shift($_PATH);
@@ -16,12 +17,10 @@ case "api":
 function yield() {
   global $command;
   $view = "views/$command.php";
-  if (file_exists($view)) {
-    include $view;
-  }
-  else {
+  if((@include $view) != 1) {
     include 'views/404.php';
- }
+  }
+
 }
 
 include 'views/layout.php';
