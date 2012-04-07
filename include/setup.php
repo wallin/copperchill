@@ -1,5 +1,5 @@
 <?php
-define('PRODUCTION', !!strstr($_SERVER['REQUEST_URI'], 'surftown'));
+define('PRODUCTION', !!strstr($_SERVER['HTTP_HOST'], 'sewa'));
 
 define('TBL_USERS', 'hc_users');
 define('TBL_OBSERVATIONS', 'hc_observations');

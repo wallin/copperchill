@@ -1,4 +1,4 @@
-<?
+<?php
 
 function getUserBySecret($secret) {
   $user = R::findOne(TBL_USERS, 'secret = ?', array($secret));
@@ -6,9 +6,10 @@ function getUserBySecret($secret) {
   throw new Exception('Invalid key');
 }
 
+
 $HANDLERS = Array();
 
-$HANDLERS['observations'] = function () {
+function handleObservations() {
   extract($_REQUEST);
   $user = getUserBySecret($key);
   switch ($_SERVER['REQUEST_METHOD']) {
@@ -28,6 +29,7 @@ $HANDLERS['observations'] = function () {
       R::store($item);
       return $item->export();
     }
+    throw new Exception('Invalid consumption');
     break;
   default:
     $from = $from ? date(DateTime::ISO8601, $from/1000) : 0;
@@ -36,6 +38,8 @@ $HANDLERS['observations'] = function () {
     foreach ($o as $item) { $results[] = $item->export(); }
     return $results;
   }
-}
+};
+
+$HANDLERS['observations'] = handleObservations;
 
 ?>

@@ -10,7 +10,7 @@ if(!$command) $command = 'home';
 $d = array();
 switch($command) {
 case "api":
-  require 'api.php';
+  require_once 'api.php';
   break;
 case "home":
   // TODO: handle users properly with login etc.
