@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  var lastUpdate = null;
   var chart = new Highcharts.Chart({
     chart: {
       renderTo: 'chart',
@@ -82,23 +83,41 @@ $(document).ready(function () {
       data: []
     }]
   });
-  // Fetch data
-  $.ajax({
-    type: 'GET',
-    url: 'api/observations',
-    data: {
-      key: window.userKey
-    },
-    success: function (r) {
-      if (!r.response) {
-        return;
-      }
-      var data = [];
-      for (var i = 0, len = r.response.length; i < len; i++) {
-        var item = r.response[i];
-        data.push([(new Date(item.created_at)).getTime(), item.consumption]);
-      }
-      chart.series[0].setData(data, true);
+
+  var addPoints = function (r, clear) {
+    if (!(r instanceof Array)) {
+      return;
     }
-  });
+    var data = [];
+    for (var i = 0, len = r.length; i < len; i++) {
+      var item = r[i];
+      var point = [(new Date(item.created_at)).getTime(), item.consumption];
+      clear ? data.push(point) : chart.series[0].addPoint(point, false);
+    }
+    clear ? chart.series[0].setData(data) : chart.redraw();
+  };
+
+  var handleUpdate = function (r) {
+    addPoints(r.response, lastUpdate === null);
+    lastUpdate = (new Date()).getTime();
+    setTimeout(fetch, 5000);
+  };
+
+  var fetch = function () {
+    var params = {
+      key: window.userKey
+    };
+    if (lastUpdate !== null) {
+      params.from = lastUpdate;
+    }
+    // Fetch data
+    $.ajax({
+      type: 'GET',
+      url: 'api/observations',
+      data: params,
+      success: handleUpdate
+    });
+  };
+
+  fetch();
 });

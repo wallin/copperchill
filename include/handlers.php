@@ -30,7 +30,18 @@ $HANDLERS['observations'] = function () {
     }
     break;
   default:
-    $o = Observation::find_all_by_user_id($user->id);
+    if ($from) {
+      $from = date(DateTime::ISO8601, $from/1000);
+      $conditions = array('user_id = ? AND created_at > ?', $user->id, $from);
+    }
+    else {
+      $conditions = array('user_id = ?', $user->id);
+    }
+    $options = array(
+                     'order' => 'created_at asc',
+                     'conditions' => $conditions
+                     );
+    $o = Observation::find('all', $options);
     $results = Array();
     foreach ($o as $item) { $results[] = $item->to_array(array('except' => array('user_id'))); }
     return $results;
