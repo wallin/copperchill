@@ -35,7 +35,12 @@ function handleObservations() {
     $from = $from ? date(DateTime::ISO8601, $from/1000) : 0;
     $o = R::find(TBL_OBSERVATIONS, 'user_id = ? AND created_at > ?', array($user->id, $from));
     $results = Array();
-    foreach ($o as $item) { $results[] = $item->export(); }
+    foreach ($o as $item) {
+      $arr = $item->export();
+      // FIXME: How to format date correctly with ReadBean?
+      $arr['created_at'] = date(DateTime::ISO8601, strtotime($arr['created_at']));
+      $results[] = $arr;
+    }
     return $results;
   }
 };

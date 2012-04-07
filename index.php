@@ -18,7 +18,7 @@ case "home":
   if ($user) {
     $d['logoutUrl'] = $facebook->getLogoutUrl();
   } else {
-    $d['loginUrl'] = $facebook->getLoginUrl();
+    $d['loginUrl'] = $facebook->getLoginUrl(array('scope' => 'email'));
     break;
   }
 
@@ -29,6 +29,7 @@ case "home":
     $d['user']->import(array(
                              'name' => $user[name],
                              'ext_id' => $user[id],
+                             'email' => $user[email],
                              'secret' => md5(time().$user[id])
                              )
                        );
