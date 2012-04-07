@@ -1,8 +1,8 @@
 <?
 
 function getUserBySecret($secret) {
-  $user = User::find_by_secret($secret);
-  if($user) return $user;
+  $user = R::findOne('hc_users', 'secret = ?', array($secret));
+  if($user->id) return $user;
   throw new Exception('Invalid key');
 }
 
@@ -11,7 +11,6 @@ $HANDLERS = Array();
 $HANDLERS['observations'] = function () {
   extract($_REQUEST);
   $user = getUserBySecret($key);
-
   switch ($_SERVER['REQUEST_METHOD']) {
   case "POST":
     $consumption = intval($consumption);
@@ -19,31 +18,22 @@ $HANDLERS['observations'] = function () {
       if(!$time) $time = time();
       else $time = strtotime($time);
       if(!$time) throw new Exception("Invalid time");
-      $item = array(
-                    'consumption' => $consumption,
-                    'created_at' => $time,
-                    'user_id' => $user->id
+      $item = R::dispense('hc_observations');
+      $item->import(array(
+                          'consumption' => $consumption,
+                          'created_at' => date(DateTime::ISO8601, $time),
+                          'user_id' => $user->id
+                          )
                     );
-      $c = Observation::create($item);
-      $c->save();
-      return $item;
+      R::store($item);
+      return $item->export();
     }
     break;
   default:
-    if ($from) {
-      $from = date(DateTime::ISO8601, $from/1000);
-      $conditions = array('user_id = ? AND created_at > ?', $user->id, $from);
-    }
-    else {
-      $conditions = array('user_id = ?', $user->id);
-    }
-    $options = array(
-                     'order' => 'created_at asc',
-                     'conditions' => $conditions
-                     );
-    $o = Observation::find('all', $options);
+    $from = $from ? date(DateTime::ISO8601, $from/1000) : 0;
+    $o = R::find('hc_observations', 'user_id = ? AND created_at > ?', array($user->id, $from));
     $results = Array();
-    foreach ($o as $item) { $results[] = $item->to_array(array('except' => array('user_id'))); }
+    foreach ($o as $item) { $results[] = $item->export(); }
     return $results;
   }
 }

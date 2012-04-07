@@ -1,5 +1,5 @@
 
-<?php if($d['user']): ?>
+<?php if($d['user']->id): ?>
 <div id="chart">
 </div>
 <script type="text/javascript">

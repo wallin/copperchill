@@ -92,7 +92,7 @@ $(document).ready(function () {
     var isEmpty = chart.series[0].data.length === 0;
     for (var i = 0, len = r.length; i < len; i++) {
       var item = r[i];
-      var point = [(new Date(item.created_at)).getTime(), item.consumption];
+      var point = [(new Date(item.created_at)).getTime(), +item.consumption];
       isEmpty ? data.push(point) : chart.series[0].addPoint(point, false);
     }
     isEmpty ? chart.series[0].setData(data) : chart.redraw();

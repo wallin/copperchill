@@ -1,13 +1,8 @@
 <?php
 
-require_once 'php-activerecord/ActiveRecord.php';
+require_once 'rb.php';
 
-ActiveRecord\Config::initialize(function($cfg)
-{
-    $cfg->set_model_directory('models');
-    $cfg->set_connections(array(
-        'development' => 'mysql://root@localhost/hotcopper'));
-});
+R::setup('mysql:host=localhost;dbname=hotcopper','root');
 
 // Extract command from URL
 $requestURI = explode('?', $_SERVER['REQUEST_URI']);

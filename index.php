@@ -13,7 +13,7 @@ case "api":
   require 'api.php';
   break;
 case "home":
-  $d['user'] = User::find_by_id(1);
+  $d['user'] = R::load('hc_users', 1);
   break;
 }
 
