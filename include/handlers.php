@@ -33,7 +33,7 @@ function handleObservations() {
     break;
   default:
     $from = $from ? date(DateTime::ISO8601, $from/1000) : 0;
-    $o = R::find(TBL_OBSERVATIONS, 'user_id = ? AND created_at > ?', array($user->id, $from));
+    $o = R::find(TBL_OBSERVATIONS, 'user_id = ? AND created_at > ? ORDER BY created_at ASC', array($user->id, $from));
     $results = Array();
     foreach ($o as $item) {
       $arr = $item->export();
