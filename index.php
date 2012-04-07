@@ -1,5 +1,5 @@
 <?
-set_include_path('../include'.PATH_SEPARATOR.'../');
+set_include_path('./include');
 
 require_once 'setup.php';
 
@@ -7,15 +7,19 @@ $command = array_shift($_PATH);
 if(!$command) $command = 'home';
 
 // Mini "controller"
+$d = array();
 switch($command) {
 case "api":
   require 'api.php';
+  break;
+case "home":
+  $d['user'] = User::find_by_id(1);
   break;
 }
 
 // Render view
 function yield() {
-  global $command;
+  global $command, $d;
   $view = "views/$command.php";
   if((@include $view) != 1) {
     include 'views/404.php';
