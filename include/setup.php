@@ -6,6 +6,13 @@ define('TBL_OBSERVATIONS', 'hc_observations');
 
 require_once 'config.php';
 require_once 'rb.php';
+require_once 'facebook/facebook.php';
+
+$facebook = new Facebook(array(
+  'appId'  => $cfg['fb_app'],
+  'secret' => $cfg['fb_secret'],
+));
+
 
 R::setup("mysql:host=".$cfg['db_host'].";dbname=".$cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
 

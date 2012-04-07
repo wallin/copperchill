@@ -13,20 +13,44 @@ case "api":
   require_once 'api.php';
   break;
 case "home":
-  // TODO: handle users properly with login etc.
-  $d['user'] = R::load(TBL_USERS, 1);
-  if(!$d['user']->id) {
+  // Check with facebook
+  $user = fb_get_user();
+  if ($user) {
+    $d['logoutUrl'] = $facebook->getLogoutUrl();
+  } else {
+    $d['loginUrl'] = $facebook->getLoginUrl();
+    break;
+  }
+
+  // Try to find user in DB. otherwise create
+  $d['user'] = R::findOne(TBL_USERS, 'ext_id = ?', array($user[id]));
+  if($user[id] && !$d['user']->id) {
     $d['user'] = R::dispense(TBL_USERS);
     $d['user']->import(array(
-                             'name' => 'Mr. Temp',
-                             'email' => 'noone@example.com',
-                             'secret' => md5(time())
+                             'name' => $user[name],
+                             'ext_id' => $user[id],
+                             'secret' => md5(time().$user[id])
                              )
                        );
     R::store($d['user']);
   }
   break;
 }
+
+function fb_get_user() {
+  global $facebook;
+  $user = $facebook->getUser();
+  $user_profile = null;
+  if ($user) {
+    try {
+      // Proceed knowing you have a logged in user who's authenticated.
+      $user_profile = $facebook->api('/me');
+    } catch (FacebookApiException $e) {
+    }
+  }
+  return $user_profile;
+}
+
 
 // Render view
 function yield() {
