@@ -7,6 +7,17 @@
 </head>
 <body>
   <h1>Copper Chill</h1>
+  <?php if($d['user']): ?>
+  <span class="account-info">
+    Logged in as:
+    <em><?php echo $d['user']->name; ?></em>
+    <a class="facebook-logout button" href="<?php echo $d['logoutUrl']; ?>">logout</a>
+  </span>
+  <?php else: ?>
+  <a class="facebook-login" href="<?php echo $d['loginUrl']; ?>">login</a>
+  <?php endif; ?>
+
+
   <?php yield(); ?>
 </body>
 </html>
