@@ -84,21 +84,22 @@ $(document).ready(function () {
     }]
   });
 
-  var addPoints = function (r, clear) {
+  var addPoints = function (r) {
     if (!(r instanceof Array)) {
       return;
     }
     var data = [];
+    var isEmpty = chart.series[0].data.length === 0;
     for (var i = 0, len = r.length; i < len; i++) {
       var item = r[i];
       var point = [(new Date(item.created_at)).getTime(), item.consumption];
-      clear ? data.push(point) : chart.series[0].addPoint(point, false);
+      isEmpty ? data.push(point) : chart.series[0].addPoint(point, false);
     }
-    clear ? chart.series[0].setData(data) : chart.redraw();
+    isEmpty ? chart.series[0].setData(data) : chart.redraw();
   };
 
   var handleUpdate = function (r) {
-    addPoints(r.response, lastUpdate === null);
+    addPoints(r.response);
     lastUpdate = (new Date()).getTime();
     setTimeout(fetch, 5000);
   };
