@@ -13,7 +13,18 @@ case "api":
   require 'api.php';
   break;
 case "home":
-  $d['user'] = R::load('hc_users', 1);
+  // TODO: handle users properly with login etc.
+  $d['user'] = R::load(TBL_USERS, 1);
+  if(!$d['user']->id) {
+    $d['user'] = R::dispense(TBL_USERS);
+    $d['user']->import(array(
+                             'name' => 'Mr. Temp',
+                             'email' => 'noone@example.com',
+                             'secret' => md5(time())
+                             )
+                       );
+    R::store($d['user']);
+  }
   break;
 }
 

@@ -1,7 +1,7 @@
 <?
 
 function getUserBySecret($secret) {
-  $user = R::findOne('hc_users', 'secret = ?', array($secret));
+  $user = R::findOne(TBL_USERS, 'secret = ?', array($secret));
   if($user->id) return $user;
   throw new Exception('Invalid key');
 }
@@ -18,7 +18,7 @@ $HANDLERS['observations'] = function () {
       if(!$time) $time = time();
       else $time = strtotime($time);
       if(!$time) throw new Exception("Invalid time");
-      $item = R::dispense('hc_observations');
+      $item = R::dispense(TBL_OBSERVATIONS);
       $item->import(array(
                           'consumption' => $consumption,
                           'created_at' => date(DateTime::ISO8601, $time),
@@ -31,7 +31,7 @@ $HANDLERS['observations'] = function () {
     break;
   default:
     $from = $from ? date(DateTime::ISO8601, $from/1000) : 0;
-    $o = R::find('hc_observations', 'user_id = ? AND created_at > ?', array($user->id, $from));
+    $o = R::find(TBL_OBSERVATIONS, 'user_id = ? AND created_at > ?', array($user->id, $from));
     $results = Array();
     foreach ($o as $item) { $results[] = $item->export(); }
     return $results;

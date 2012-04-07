@@ -1,8 +1,13 @@
 <?php
+define('PRODUCTION', !!strstr($_SERVER['REQUEST_URI'], 'surftown'));
 
+define('TBL_USERS', 'hc_users');
+define('TBL_OBSERVATIONS', 'hc_observations');
+
+require_once 'config.php';
 require_once 'rb.php';
 
-R::setup('mysql:host=localhost;dbname=hotcopper','root');
+R::setup("mysql:host=".$cfg['db_host'].";dbname=".$cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
 
 // Extract command from URL
 $requestURI = explode('?', $_SERVER['REQUEST_URI']);
