@@ -3,40 +3,9 @@ set_include_path('./include');
 
 require_once 'setup.php';
 
+$d = array();
 $command = array_shift($_PATH);
 if(!$command) $command = 'home';
-
-// Mini "controller"
-$d = array();
-switch($command) {
-case "api":
-  require_once 'api.php';
-  break;
-case "home":
-  // Check with facebook
-  $user = fb_get_user();
-  if ($user) {
-    $d['logoutUrl'] = $facebook->getLogoutUrl();
-  } else {
-    $d['loginUrl'] = $facebook->getLoginUrl(array('scope' => 'email'));
-    break;
-  }
-
-  // Try to find user in DB. otherwise create
-  $d['user'] = R::findOne(TBL_USERS, 'ext_id = ?', array($user[id]));
-  if($user[id] && !$d['user']->id) {
-    $d['user'] = R::dispense(TBL_USERS);
-    $d['user']->import(array(
-                             'name' => $user[name],
-                             'ext_id' => $user[id],
-                             'email' => $user[email],
-                             'secret' => md5(time().$user[id])
-                             )
-                       );
-    R::store($d['user']);
-  }
-  break;
-}
 
 function fb_get_user() {
   global $facebook;
@@ -60,7 +29,36 @@ function yield() {
   if((@include $view) != 1) {
     include 'views/404.php';
   }
+}
 
+// Check with facebook
+$fbuser = fb_get_user();
+if ($fbuser) {
+  $d['logoutUrl'] = $facebook->getLogoutUrl();
+} else {
+  $d['loginUrl'] = $facebook->getLoginUrl(array('scope' => 'email'));
+}
+if ($fbuser) {
+  // Try to find user in DB. otherwise create
+  $d['user'] = R::findOne(TBL_USERS, 'ext_id = ?', array($fbuser[id]));
+  if($fbuser[id] && !$d['user']->id) {
+    $d['user'] = R::dispense(TBL_USERS);
+    $d['user']->import(array(
+                             'name' => $fbuser[name],
+                             'ext_id' => $fbuser[id],
+                             'email' => $fbuser[email],
+                             'secret' => md5(time().$fbuser[id])
+                             )
+                       );
+    R::store($d['user']);
+  }
+}
+
+// Mini "controller"
+switch($command) {
+case "api":
+  require_once 'api.php';
+  break;
 }
 
 include 'views/layout.php';

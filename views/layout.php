@@ -13,8 +13,6 @@
     <em><?php echo $d['user']->name; ?></em>
     <a class="facebook-logout button" href="<?php echo $d['logoutUrl']; ?>">logout</a>
   </span>
-  <?php else: ?>
-  <a class="facebook-login" href="<?php echo $d['loginUrl']; ?>">login</a>
   <?php endif; ?>
 
 

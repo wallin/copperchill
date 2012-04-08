@@ -1,5 +1,8 @@
 $(document).ready(function () {
   var lastUpdate = null;
+  if ($('#chart').length === 0) {
+    return;
+  }
   var chart = new Highcharts.Chart({
     chart: {
       renderTo: 'chart',
