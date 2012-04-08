@@ -8,17 +8,6 @@ $command = array_shift($_PATH);
 if(!$command) $command = 'home';
 
 function fb_get_user() {
-  global $facebook;
-  $user = $facebook->getUser();
-  $user_profile = null;
-  if ($user) {
-    try {
-      // Proceed knowing you have a logged in user who's authenticated.
-      $user_profile = $facebook->api('/me');
-    } catch (FacebookApiException $e) {
-    }
-  }
-  return $user_profile;
 }
 
 
@@ -32,12 +21,17 @@ function yield() {
 }
 
 // Check with facebook
-$fbuser = fb_get_user();
-if ($fbuser) {
-  $d['logoutUrl'] = $facebook->getLogoutUrl();
-} else {
-  $d['loginUrl'] = $facebook->getLoginUrl(array('scope' => 'email'));
+$user = $facebook->getUser();
+$fbuser = null;
+if ($user) {
+  try {
+    // Proceed knowing you have a logged in user who's authenticated.
+    $fbuser = $facebook->api('/me');
+  } catch (FacebookApiException $e) {
+    $fbuser = null;
+  }
 }
+
 if ($fbuser) {
   // Try to find user in DB. otherwise create
   $d['user'] = R::findOne(TBL_USERS, 'ext_id = ?', array($fbuser[id]));

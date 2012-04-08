@@ -2,5 +2,5 @@
 <div id="chart">
 </div>
 <?php else: ?>
-<a class="facebook-login" href="<?php echo $d['loginUrl']; ?>">login</a>
+<a id="fb_login" class="facebook-login">login</a>
 <?php endif; ?>
