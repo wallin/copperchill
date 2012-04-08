@@ -1,6 +1,12 @@
 <?php
 
-function getUserBySecret($secret) {
+function getUser() {
+  global $d;
+  if ($d[user]) {
+    return $d[user];
+  }
+  $key = $_REQUEST['key'];
+  if (!$key) $key = $_COOKIE['key'];
   $user = R::findOne(TBL_USERS, 'secret = ?', array($secret));
   if($user->id) return $user;
   throw new Exception('Invalid key');
@@ -11,7 +17,7 @@ $HANDLERS = Array();
 
 function handleObservations() {
   extract($_REQUEST);
-  $user = getUserBySecret($key);
+  $user = getUser();
   switch ($_SERVER['REQUEST_METHOD']) {
   case "POST":
     $consumption = intval($consumption);

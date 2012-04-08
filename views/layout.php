@@ -1,5 +1,6 @@
 <html>
 <head>
+  <title>Copper chill &mdash; monitor your powerconsumption in realtime</title>
   <script src="assets/javascripts/jquery-1.7.2.min.js"></script>
   <script src="assets/javascripts/highcharts.js"></script>
   <script src="assets/javascripts/app.js"></script>
@@ -33,19 +34,21 @@
       });
     });
   </script>
-  <h1>Copper Chill</h1>
-  <?php if($d['user']): ?>
-  <script type="text/javascript">
-    window.userKey = '<?php echo $d['user']->secret; ?>';
-  </script>
-  <span class="account-info">
-    Logged in as:
-    <em><?php echo $d['user']->name; ?></em>
-    <a id="fb_logout" class="facebook-logout button">logout</a>
-  </span>
-  <?php endif; ?>
+  <div id="wrapper">
+    <header class="inner">
+      <h1>Copper Chill</h1>
+      <?php if($d['user']): ?>
+      <span class="account-info">
+        Logged in as:
+        <em><?php echo $d['user']->name; ?></em>
+        <a id="fb_logout" class="facebook-logout button">logout</a>
+      </span>
+      <?php endif; ?>
+    </div>
 
-
-  <?php yield(); ?>
+    <section class="inner">
+      <?php yield(); ?>
+    </section>
+  </div>
 </body>
 </html>

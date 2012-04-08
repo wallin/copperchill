@@ -39,7 +39,7 @@ $(document).ready(function () {
     tooltip: {
       formatter: function () {
         return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-               Highcharts.numberFormat(this.y, 0) + ' kWh';
+               Highcharts.numberFormat(this.y, 0) + 'W';
       },
       borderWidth: 0,
       backgroundColor: '#101010',
@@ -110,9 +110,7 @@ $(document).ready(function () {
   };
 
   var fetch = function () {
-    var params = {
-      key: window.userKey
-    };
+    var params = { };
     if (lastUpdate !== null) {
       params.from = lastUpdate;
     }
