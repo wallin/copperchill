@@ -23,7 +23,7 @@ $(document).ready(function () {
     },
     yAxis: {
       title: {
-        text: 'kWh'
+        text: 'Power / W'
       },
       gridLineColor: '#101010'
     },
@@ -103,7 +103,9 @@ $(document).ready(function () {
 
   var handleUpdate = function (r) {
     addPoints(r.response);
-    lastUpdate = (new Date()).getTime();
+    if ((r.response instanceof Array) && r.response.length > 0) {
+      lastUpdate = (new Date()).getTime();
+    }
     setTimeout(fetch, 5000);
   };
 

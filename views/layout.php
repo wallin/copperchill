@@ -8,6 +8,9 @@
 <body>
   <h1>Copper Chill</h1>
   <?php if($d['user']): ?>
+  <script type="text/javascript">
+    window.userKey = '<?php echo $d['user']->secret; ?>';
+  </script>
   <span class="account-info">
     Logged in as:
     <em><?php echo $d['user']->name; ?></em>

@@ -45,6 +45,16 @@ current consumption: <span id="result">-</span>W
         avg_consumption = 0;
         nbr_samples = 0;
         last_start_time = (new Date()).getTime();
+        if (window.userKey) {
+          $.ajax({
+            type: 'POST',
+            url: 'http://sewa.se/copperchill/api/observations',
+            data: {
+              key: window.userKey,
+              consumption: avg
+            }
+          });
+        }
       };
     }());
 
